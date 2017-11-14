@@ -1,0 +1,24 @@
+from visual import *
+
+m = 0.405#mass in kg
+k = 515.0#N/m
+c = 0.046#Compression in meters
+t = 0.0
+dt = 0.01
+
+a = vector(0.0,0.0,0.0)
+v = vector(sqrt((k*c**2)/m),0.0,0.0)#Initial velocity
+s = vector(-0.046,0.0,0.0)
+
+ball = sphere(pos=s, radius=.1,color=color.cyan)#physical representation of the mass
+
+while s.x<0.0:#Stops when mass hits the ground
+    rate(10)
+    Fs = -k * (s.x**2*norm(s))#Force of the spring
+    a = Fs/m
+    v = v + a * dt
+    s = s + v * dt
+    t = t + dt
+    ball.pos = s
+    print 'v=',v
+#Final velocity is 1.68 m/s.
