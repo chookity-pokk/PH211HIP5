@@ -38,3 +38,4 @@ while s.y<61.0:
     s = s + v * dt
     t = t + dt
     print 'D=',D
+#D asymtotically approaches -9.8
