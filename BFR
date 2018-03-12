@@ -1,0 +1,67 @@
+from visual import *
+a = vector(0.0,0.0,0.0)
+v = vector(0.0,0.0,0.0)
+s = vector(0.0,0.0,0.0)
+g = -9.8
+L1 = 106#length of total rocket
+L2 = 48#length of rocket after thruster detatches
+m1 = 85000#Mass of rocket
+m2 = 1100000#mass of rocket and propellent
+r = 4.5 #radius of rocket
+A =2*pi*r*L1+2*pi*r**2
+cD = .75#NASA.gov drag coefficient
+Ft = vector(0.0,0.0,0.0)#Force of the thrusters
+Fg = vector(0.0,0.0,0.0)#Force of gravity
+Fd = vector(0.0,0.0,0.0)#Force of drag
+G = 6.67e-11#gravitational constant
+M = 6e24#mass of the Earth
+t = 0.0
+dt = 5.0
+BFR = cylinder(radius = r,height = L1, color=color.cyan)
+
+
+while s.y<2000000.0:#Low Earth orbit is 2000km and the BFR goes that high to avoid the atmosphere
+    rate = (10000)
+    lm = (m2+m1)/(t+dt)
+    p = (0.289*e**(1.73-.000157*mag(s)))#equation for the change in the density of the air.
+    Ft = vector(0.0,52700000.0,0.0)
+    Fg = vector(0.0,(m2+m1*g),0.0)
+    Fd = vector(0.0,.5*A*cD*p*mag(v)**2,0.0)
+    Fnet = Ft-(Fd+(Fg))
+    a = Fnet/(lm)
+    v = v + a * dt
+    s = s + v * dt
+    BFR.pos = s
+    t = t + dt
+    print 't=',t
+#I have chosen to have the BFR fly from Sydney to Singapore.
+#So if the rocket shoots relatively straight up, it will have to fly about 6300km.
+#Though since we're in Low Earth Orbit we can get rid of drag due to the lack of atmosphere.
+#Half way through the thruster will detach from our rocket, leaving us with L2.
+
+while s.x<6000000.0:
+    rate = (10000)
+    Ft = vector(52700000.0,0.0,0.0)
+    Fg = vector(0.0,(m1+m2)*g,0.0)
+    Fnet = Ft-Fg
+    a = Fnet/(m1+m2)
+    v = v + a * dt
+    s = s + v * dt
+    BFR.pos = s
+    t = t + dt
+    print 't=',t
+while s.y>0.0:#Makes sure our rocket runs until it touches down.
+    rate = (10000)
+    lm = (m2+m1)/(t+dt)
+    p = (0.289*e**(1.73-.000157*mag(s)))#equation for the change in the density of the air.
+    Ft = vector(0.0,-52700000.0,0.0)
+    Fg = vector(0.0,(m2+m1*g),0.0)
+    Fd = vector(0.0,.5*A*cD*p*mag(v)**2,0.0)
+    Fnet = Fg+(Ft)
+    a = Fnet/(lm)
+    v = v + a * dt
+    s = s + v * dt
+    BFR.pos = s
+    t = t + dt
+    print 't=',t
+##The total time of our travel is just over 30 minutes which lines up with what SpaceX claims their time would be.
